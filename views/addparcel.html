@@ -1,0 +1,25 @@
+<html>
+<head>
+    <link rel="stylesheet" href="addparcel.css">
+</head>
+<body>
+    <button><a href="/">Homepage</a></button>
+    <form action="/parcelpost" method="post">
+        <label>sender</label>
+        <input type="text" name="sender"/>
+        <label>address</label>
+        <input type="text" name="address"/>
+        <label>weight</label>
+        <input type="number" name="weight"/> 
+        <label>fragile</label>
+        <select name="fragile" id="fragile">
+            <option value="true">True</option>
+            <option value="false">False</option>
+        </select>
+        <label>cost</label>
+        <input type="number" name="cost"/>
+        <button>Submit</button>
+    </form>
+</body>
+
+</html>

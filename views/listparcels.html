@@ -1,0 +1,37 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="listparcels.css">
+    </head>
+<body>
+    <button><a href="/">Homepage</a></button>
+    <button><a href="/">homepage</a></button>
+    <button><a href="/addparcel">Add Parcel</a></button>
+    <table border="1">
+        <th>sender</th>
+        <th>address</th>
+        <th>weight</th>
+        <th>fragile</th>
+        <th>Cost</th>
+        <% for ( let i =0; i < parcel.length;i++){ %>
+            <tr><td> <%= parcel[i].sender %>  </td> <td><%= parcel[i].address %></td> <td><%= parcel[i].weight %></td> <td><%= parcel[i].fragile %> <td><%= parcel[i].cost %></td></tr>
+            <% }%>
+    </table>
+    </br>
+
+
+    <form action="/listsender" method="post">
+        <label>Sender</label>
+        <input type="text" name="sender">
+        <button>Submit</button>
+    </form>
+
+    <form action="/listrange" method="post">
+        <label>weight range</label>
+        <input type="text" name="sender">
+        <button>Submit</button>
+    </form>
+ 
+ 
+</body>
+
+</html>
