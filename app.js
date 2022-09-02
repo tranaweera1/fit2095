@@ -26,14 +26,14 @@ const Parcel = require("./models/Parcel");
 
 // Mongodb connection
 
-mongoose.connect('mongodb://localhost/productDB', function (err) {
-    if (err) {
-        console.log('Error in Mongoose connection');
-        throw err;
-    } else {
-        console.log("succuessfully connected to Database")
-    }
-})
+    mongoose.connect('mongodb://localhost/productDB', function (err) {
+        if (err) {
+            console.log('Error in Mongoose connection');
+            throw err;
+        } else {
+            console.log("succuessfully connected to Database")
+        }
+    })
 
 // GET ENDPOINTS
 
@@ -70,7 +70,8 @@ app.post('/parcelpost', async function (req, res) {
 
     try {
         const parcel = await newParcel.save();
-        res.status(201).json(parcel);
+        const parcels = await Parcel.find();
+        res.render("listparcels.html", {parcel: parcels});
         console.log("New parcel is successfully saved in database");
     } catch (err) {
         res.status(500).json(err);
@@ -84,6 +85,7 @@ app.get('/list', async function (req, res) {
 
     try {
         const parcels = await Parcel.find();
+        console.log(parcels);
         res.render('listparcels.html', {parcel: parcels});
      } catch (err) {
          res.status(500).json(err);
@@ -93,7 +95,26 @@ app.get('/list', async function (req, res) {
 
 
 
+// LIST PARCELS BY WEIGHT RANGE
+
+app.post('/listrange', async function (req, res) {
+    
+    try {
+        const parcels = await Parcel.find({
+            weight: {
+                $lte: req.body.max, 
+                $gte: req.body.min
+            }
+        });
+        res.render('listsender.html', {parcel: parcels});
+     } catch (err) {
+         res.status(500).json(err);
+     }
+});
+
+
 // LIST PARCELS BY SENDER
+
 
 app.post('/listsender', async function (req, res) {
     
@@ -105,21 +126,31 @@ app.post('/listsender', async function (req, res) {
      }
 });
 
-
-// LIST PARCELS BY WEIGHT RANGE
-
+// DELETE PARCEL BY WEIGHT
 
 
+app.post('/deleteparcelweight', async function (req, res) {
 
+    try {
+        const deletedParcel = await Parcel.deleteMany({ weight: req.body.weight});
+        console.log("The Parcel has been deleted");
+        const parcels = await Parcel.find();
+        res.render("listsender.html", {parcel: parcels});
+    } catch (err) {
+        res.status(201).json(err);
+    }
+
+})
 
 // DELETE PARCEL BY SENDER 
 
 app.post('/deleteparcelbysender', async function (req, res) {
 
     try {
-        await Parcel.findOneAndDelete({ sender: req.body.sender});
-        res.status(201).json("The Parcel has been deleted");
-        console.log("The Parcel has been deleted")
+        const deletedParcel = await Parcel.findOneAndDelete({ sender: req.body.sender});
+        console.log("The Parcel has been deleted");
+        const parcels = await Parcel.find();
+        res.render("listsender.html", {parcel: parcels});
     } catch (err) {
         res.status(201).json(err);
     }
@@ -129,13 +160,14 @@ app.post('/deleteparcelbysender', async function (req, res) {
 // DELETE PARCEL BY ID
 
 app.post('/deleteparcel', async function (req, res) {
-    
+    const ObjectId = require('mongodb').ObjectId;
     let id = req.body.idvalue;
     
     try {
-        await Parcel.findByIdAndDelete(id);
-        res.status(201).json("The Parcel has been deleted");
-        console.log("The Parcel has been deleted")
+        await Parcel.findByIdAndDelete(new ObjectId(id));
+        console.log("The Parcel has been deleted");
+        const parcels = await Parcel.find();
+        res.render("listsender.html", {parcel: parcels});
     } catch (err) {
         res.status(201).json(err);
     }
@@ -145,10 +177,11 @@ app.post('/deleteparcel', async function (req, res) {
 // UPDATE PARCEL BY ID
 
 app.post('/updateparcel', async function (req, res) {
-
+    const ObjectId = require('mongodb').ObjectId;
+    let id = req.body.id;
     try {
         const updatedParcel = await Parcel.findByIdAndUpdate(
-            req.body.id, 
+            new ObjectId(id), 
             {
                 $set: req.body,
             },

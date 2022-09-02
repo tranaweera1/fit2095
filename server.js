@@ -20,13 +20,13 @@ app.use(express.json());
 
 MongoClient.connect(url, {useNewUrlParser: true}, function (err, client) {
     if (err) {
-        console.log('Err  ', err);
+        console.log('Err', err);
     } else {
         console.log("Connected successfully to server");
         db = client.db('fi2095table');
     }
 });
-
+zs
 
 // NAVIGATION GET REQUESTS
 
